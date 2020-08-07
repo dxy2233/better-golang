@@ -4,8 +4,10 @@ import (
 	"bufio"
 	"fmt"
 	"io/ioutil"
+	"net/smtp"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 // testPath 验证路径不为空
@@ -27,8 +29,8 @@ func testPath(path1, path2 string) error {
 func clearPath(path string) error {
 	fs, _ := ioutil.ReadDir(path)
 	for _, v := range fs {
-		if v.Name() != "node_modules" {
-			err := exec.Command("powershell", "rm"+" "+"-r"+" "+path+"/"+v.Name()).Run()
+		if v.Name() != "node_modules" && v.Name() != ".git" && v.Name() != ".svn" {
+			err := exec.Command("powershell", "rm -r "+path+"/"+v.Name()).Run()
 			if err != nil {
 				fmt.Println(err)
 				return err
@@ -39,11 +41,11 @@ func clearPath(path string) error {
 }
 
 // cpFile 拷贝新文件
-func cpFile(gitPath, svnPath string) error {
-	fs, _ := ioutil.ReadDir(gitPath)
+func cpFile(fromPath, toPath string) error {
+	fs, _ := ioutil.ReadDir(fromPath)
 	for _, v := range fs {
-		if v.Name() != "node_modules" && v.Name() != ".git" {
-			err := exec.Command("powershell", "cp"+" "+"-r"+" "+gitPath+"/"+v.Name()+" "+svnPath).Run()
+		if v.Name() != "node_modules" && v.Name() != ".git" && v.Name() != ".svn" {
+			err := exec.Command("powershell", "cp -r "+fromPath+"/"+v.Name()+" "+toPath).Run()
 			if err != nil {
 				fmt.Println(err)
 				return err
@@ -78,4 +80,20 @@ func npm(order, path string) (string, error) {
 	}
 	fmt.Println(string(out))
 	return string(out), nil
+}
+
+// email
+func sendEmail(user, pwd, host, to, subject, body, mailtype string) error {
+	hp := strings.Split(host, ":")
+	auth := smtp.PlainAuth("", user, pwd, hp[0])
+	contentType := ""
+	if mailtype == "html" {
+		contentType = "Content-Type: text/" + mailtype + "; charset=UTF-8"
+	} else {
+		contentType = "Content-Type: text/plain" + "; charset=UTF-8"
+	}
+	msg := []byte("To: " + to + "\r\nFrom: " + user + "\r\nSubject: " + subject + "\r\n" + contentType + "\r\n\r\n" + body)
+	sendTo := strings.Split(to, ";")
+	err := smtp.SendMail(host, auth, user, sendTo, msg)
+	return err
 }
