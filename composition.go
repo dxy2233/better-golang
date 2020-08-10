@@ -61,11 +61,15 @@ func push(gitPath, svnPath, projectName string) {
 	fmt.Println("--------------------delete over--------------------")
 
 	// svn提交
-	_, svnCommitErr := npm("svn commit -m "+commit, svnCommitPath)
-	if svnCommitErr != nil {
+	svnCommitInfo, err := npm("svn commit -m '"+commit+"'", svnCommitPath)
+	if err != nil {
 		return
 	}
-	fmt.Println("--------------------commite over--------------------")
+	if svnCommitInfo == "" {
+		fmt.Println("--------------------none commit--------------------")
+		return
+	}
+	fmt.Println("--------------------commit over--------------------")
 
 	// email
 	// user pwd host to配置在本地文件
