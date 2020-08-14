@@ -48,6 +48,10 @@ export function getRoles(data) {
 
 /**
  * @description 保存角色
+ * @param id 角色ID
+ * @param code 角色编码
+ * @param name 角色名称
+ * @param menuIdList 菜单ID集合
  */
 export function saveRole(data) {
   return request({

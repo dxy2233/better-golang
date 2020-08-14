@@ -65,6 +65,11 @@ export function getPenetrationByProcessId(data) {
 
 /**
  * @description 项目备案条件和分页查询
+ * @param processNode 当前节点:0 全部 1 立项 2 设计 3 建设 4 初验 5 终验 6 运维 7 暂停 8 完成
+ * @param startPage 页面编号
+ * @param pageSize 页面大小
+ * @param projectCode 项目编号
+ * @param projectName 项目名称
  */
 export function getReportList(data) {
   return request({
@@ -76,6 +81,7 @@ export function getReportList(data) {
 
 /**
  * @description 基线初查初始化
+ * @param dictionIds 资产ids
  */
 export function getReportListData(data) {
   return request({
@@ -99,6 +105,13 @@ export function reformPenetration(data) {
 
 /**
  * @description 项目基线保存
+ * @param osCode 操作系统
+ * @param middlewareCode 中间件
+ * @param dataBaseCode 数据库
+ * @param childData 基线数据 Linux
+ * @param status 状态 ：初查 1 ， 复查 2
+ * @param reportUserBaseBO 用户单位信息
+ * @param deviceId 设备id
  */
 export function saveBaseline(data) {
   return request({
@@ -110,6 +123,9 @@ export function saveBaseline(data) {
 
 /**
  * @description 保存渗透
+ * @param processId 流程id
+ * @param reportUserBaseBO 用户信息
+ * @param reportPenetrationBO 渗透报告基本信息
  */
 export function savePenetration(data) {
   return request({
@@ -121,6 +137,8 @@ export function savePenetration(data) {
 
 /**
  * @description 保存复查渗透
+ * @param processId 流程ID
+ * @param reportUserBaseBO 用户单位基本信息
  */
 export function saveReviewPenetration(data) {
   return request({
@@ -132,6 +150,11 @@ export function saveReviewPenetration(data) {
 
 /**
  * @description 上传报告图片
+ * @param file file
+ * @param mode mode
+ * @param processId processId
+ * @param status status
+ * @param type type
  */
 export function uploadReport(data) {
   return request({

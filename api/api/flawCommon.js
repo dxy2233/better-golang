@@ -14,6 +14,11 @@ export function deleteFlaw(data) {
 
 /**
  * @description 获取项目漏洞详情
+ * @param orgId 单位id
+ * @param startPage 页面编号
+ * @param pageSize 页面大小
+ * @param projectName 项目名称
+ * @param dutyUserName 项目当前责任人
  */
 export function getFlawDetailInfoPage(data) {
   return request({
@@ -39,6 +44,9 @@ export function getFlawListByFileId(data) {
 
 /**
  * @description 根据流程节点获取漏洞详情列表
+ * @param startPage 页面编号
+ * @param pageSize 页面大小
+ * @param processId 流程id
  */
 export function getFlawListByProcessId(data) {
   return request({
@@ -98,6 +106,13 @@ export function reviewByFileId(data) {
 
 /**
  * @description 上传漏洞扫描报告
+ * @param email email
+ * @param file file
+ * @param fileType fileType
+ * @param orgName orgName
+ * @param personName personName
+ * @param processId processId
+ * @param tel tel
  */
 export function uploadFlawReport(data) {
   return request({

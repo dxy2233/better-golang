@@ -48,6 +48,11 @@ export function getFacilitatorNameList(data) {
 
 /**
  * @description 服务商信息条件和分页查询
+ * @param startPage 页面编号
+ * @param pageSize 页面大小
+ * @param id 编号
+ * @param name 供应商名称
+ * @param orgId 部门id
  */
 export function getInfoPage(data) {
   return request({
@@ -73,6 +78,7 @@ export function getPersonByFacilitatorId(data) {
 
 /**
  * @description 服务商资质上传
+ * @param file file
  */
 export function qualificationUpload(data) {
   return request({
@@ -84,6 +90,13 @@ export function qualificationUpload(data) {
 
 /**
  * @description 服务商信息保存
+ * @param endTime 服务结束时间：必填选项！
+ * @param qualification 资质是否符合:0：否 1：是
+ * @param qualificationName 资质名称
+ * @param qualificationPath 资质路径
+ * @param id 主键名称
+ * @param name 供应商名称
+ * @param startTime 服务开始时间：必填选项！
  */
 export function saveFacilitator(data) {
   return request({
@@ -95,6 +108,12 @@ export function saveFacilitator(data) {
 
 /**
  * @description 服务商人员信息保存
+ * @param id 人员管理ID
+ * @param facilitatorId 供应商外键Id
+ * @param name 姓名
+ * @param sex 性别 0:女 1：男
+ * @param idCard 身份证
+ * @param practiceMode 联系方式
  */
 export function saveFacilitatorPerson(data) {
   return request({

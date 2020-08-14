@@ -26,6 +26,8 @@ export function preview(data) {
 
 /**
  * @description 上传文件到临时文件夹
+ * @param file file
+ * @param isPicture isPicture
  */
 export function uploadTempFile(data) {
   return request({

@@ -15,7 +15,7 @@ import (
 
 // Docs api文档数据最外层
 type Docs struct {
-	Definitions map[string]interface{} `json:"definitions "`
+	Definitions map[string]interface{} `json:"definitions"`
 	Paths       map[string]interface{} `json:"paths"`
 	Tags        []interface{}          `json:"tags"`
 }
@@ -93,7 +93,7 @@ func createFile(data Docs) error {
 			fmt.Println(err)
 			return err
 		}
-		_, writeErr := f.WriteString(textTemplate(item["api"]))
+		_, writeErr := f.WriteString(textTemplate(item["api"], data.Definitions))
 		if writeErr != nil {
 			fmt.Println(writeErr)
 			return err
@@ -103,27 +103,42 @@ func createFile(data Docs) error {
 }
 
 // 文件模板
-func textTemplate(input interface{}) string {
-	data := input.([]interface{})
+func textTemplate(api, definitions interface{}) string {
+	info := api.([]interface{})
 	res := `import request from '@/utils/request'
 `
-	for _, item := range data {
+	for _, item := range info {
 		item := item.(map[string]interface{})
 		url := item["url"].(string)
 		apiName := url[strings.LastIndex(url, "/")+1:]
 		params := []interface{}{}
-		if item["method"] == "get" && item["content"].(map[string]interface{})["parameters"] != nil {
-			params = item["content"].(map[string]interface{})["parameters"].([]interface{})
-		}
-		if item["method"] == "post" && item["content"].(map[string]interface{})["parameters"] != nil {
-			adress := item["content"].(map[string]interface{})["parameters"].([]interface{})[0].(map[string]interface{})["schema"]
-			if adress != nil {
-				fmt.Println(item)
-				fmt.Println(adress)
-				str := adress.(map[string]interface{})["$ref"].(string)
-				fmt.Println(str)
-				BOName := str[strings.LastIndex(str, "/")+1:]
-				fmt.Println(BOName)
+		if item["content"].(map[string]interface{})["parameters"] != nil {
+			parameters := item["content"].(map[string]interface{})["parameters"].([]interface{})
+			if item["method"] == "get" {
+				params = parameters
+			}
+			if item["method"] == "post" {
+				if _, ok := parameters[0].(map[string]interface{})["schema"]; ok {
+					address := map[string]interface{}{}
+					if _, ok := parameters[0].(map[string]interface{})["schema"].(map[string]interface{})["items"]; !ok {
+						address = parameters[0].(map[string]interface{})["schema"].(map[string]interface{})
+					} else if _, ok := parameters[0].(map[string]interface{})["schema"].(map[string]interface{})["items"]; ok {
+						address = parameters[0].(map[string]interface{})["schema"].(map[string]interface{})["items"].(map[string]interface{})
+					}
+					str := address["$ref"].(string)
+					BOName := str[strings.LastIndex(str, "/")+1:]
+					BO := definitions.(map[string]interface{})[BOName].(map[string]interface{})["properties"].(map[string]interface{})
+					for k, v := range BO {
+						param := map[string]string{
+							"name":        k,
+							"description": v.(map[string]interface{})["description"].(string),
+						}
+						params = append(params, param)
+					}
+				} else {
+					params = parameters
+				}
+
 			}
 		}
 		res = res + `
