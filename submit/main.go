@@ -9,11 +9,11 @@ import (
 var (
 	gitPath     = "d:/engin-three/name"
 	svnPath     = "d:/three/name/code"
-	projectList = [...]string{"yys"}
+	projectList = [...]string{"yys", "tgj"}
 )
 
 func main() {
-	// 输入项目与type
+	// 输入项目信息
 	config := inputText("输入项目和类型(yys push)")
 	configArray := strings.Split(config, " ")
 	projectName := configArray[0]
